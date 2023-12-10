@@ -1,0 +1,203 @@
+<?xml version="1.0"?>
+<system name="C140: FCS">
+	<channel name="Pitch">
+		<summer name="Pitch Trim Sum">
+			<input>fcs/elevator-cmd-norm</input>
+			<input>fcs/pitch-trim-cmd-norm</input>
+			<clipto>
+				<min>-1</min>
+				<max>1</max>
+			</clipto>
+		</summer>
+		
+		<aerosurface_scale name="Elevator Control">
+			<input>fcs/pitch-trim-sum</input>
+			<range>
+				<min>-0.35</min>
+				<max>0.35</max>
+			</range>
+			<output>fcs/elevator-pos-rad</output>
+		</aerosurface_scale>
+		
+		<aerosurface_scale name="Elevator Normalization">
+			<input>fcs/elevator-pos-rad</input>
+			<domain>
+				<min>-0.35</min>
+				<max>0.35</max>
+			</domain>
+			<range>
+				<min>-1</min>
+				<max>1</max>
+			</range>
+			<output>fcs/elevator-pos-norm</output>
+		</aerosurface_scale>
+	</channel>
+	
+	<channel name="Roll">
+		<summer name="Roll Trim Sum">
+			<input>fcs/aileron-cmd-norm</input>
+			<input>fcs/roll-trim-cmd-norm</input>
+			<clipto>
+				<min>-1</min>
+				<max>1</max>
+			</clipto>
+		</summer>
+		
+		<aerosurface_scale name="Left Aileron Control">
+			<input>fcs/roll-trim-sum</input>
+			<range>
+				<min>-0.384</min>
+				<max>0.244</max>
+			</range>
+			<output>fcs/left-aileron-pos-rad</output>
+		</aerosurface_scale>
+		
+		<aerosurface_scale name="Right Aileron Control">
+			<input>-fcs/roll-trim-sum</input>
+			<range>
+				<min>-0.384</min>
+				<max>0.244</max>
+			</range>
+			<output>fcs/right-aileron-pos-rad</output>
+		</aerosurface_scale>
+		
+		<aerosurface_scale name="Left Aileron Normalization">
+			<input>fcs/left-aileron-pos-rad</input>
+			<domain>
+				<min>-0.384</min>
+				<max>0.384</max>
+			</domain>
+			<range>
+				<min>-1</min>
+				<max>1</max>
+			</range>
+			<output>fcs/left-aileron-pos-norm</output>
+		</aerosurface_scale>
+		
+		<aerosurface_scale name="Right Aileron Normalization">
+			<input>fcs/right-aileron-pos-rad</input>
+			<domain>
+				<min>-0.384</min>
+				<max>0.384</max>
+			</domain>
+			<range>
+				<min>-1</min>
+				<max>1</max>
+			</range>
+			<output>fcs/right-aileron-pos-norm</output>
+		</aerosurface_scale>
+	</channel>
+	
+	<channel name="Yaw">
+		<summer name="Rudder Command Sum">
+			<input>fcs/rudder-cmd-norm</input>
+			<input>fcs/yaw-trim-cmd-norm</input>
+			<clipto>
+				<min>-1</min>
+				<max>1</max>
+			</clipto>
+		</summer>
+		
+		<aerosurface_scale name="Rudder Control">
+			<input>fcs/rudder-command-sum</input>
+			<range>
+				<min>-0.279</min>
+				<max> 0.279</max>
+			</range>
+			<output>fcs/rudder-pos-rad</output>
+		</aerosurface_scale>
+		
+		<aerosurface_scale name="Rudder Normalization">
+			<input>fcs/rudder-pos-rad</input>
+			<domain>
+				<min>-0.279</min>
+				<max>0.279</max>
+			</domain>
+			<range>
+				<min>-1</min>
+				<max>1</max>
+			</range>
+			<output>fcs/rudder-pos-norm</output>
+		</aerosurface_scale>
+		
+		<!--	Implement spring simulation based on https://forum.flightgear.org/viewtopic.php?f=4&t=39615, thanks to OO-ZVY!	-->
+		<fcs_function>
+			<function>
+				<product>
+					<property>fcs/rudder-pos-norm</property>
+					<table>
+						<independentVar lookup="row">/velocities/groundspeed-kt</independentVar>
+						<tableData>
+							0	1
+							5	1
+							10	0.3
+						</tableData>
+					</table>
+				</product>
+			</function>
+			<output>fcs/steer-cmd-norm</output>
+		</fcs_function>
+	</channel>
+	
+	<channel name="Flaps">
+		<kinematic name="Flaps Control">
+			<input>fcs/flap-cmd-norm</input>
+			<traverse>
+				<setting>
+					<position>0</position>
+					<time>0</time>
+				</setting>
+				<setting>
+					<position> 40 </position>
+					<time>1</time>
+				</setting>
+			</traverse>
+			<output>fcs/flap-pos-deg</output>
+		</kinematic>
+		
+		<aerosurface_scale name="Flap Normalization">
+			<input>fcs/flap-pos-deg</input>
+			<domain>
+				<min>0</min>
+				<max>40</max>
+			</domain>
+			<range>
+				<min>0</min>
+				<max>1</max>
+			</range>
+			<output>fcs/flap-pos-norm</output>
+		</aerosurface_scale>
+	</channel>
+	
+	<channel name="Engine Control">
+		<actuator name="Primer lever animation">
+			<input>/controls/engines/engine[0]/primer-lever</input>
+			<rate_limit>1.2</rate_limit>
+			<output>/controls/engines/engine[0]/primer-animation</output>
+		</actuator>
+		
+		<actuator name="Fuel selector animation">
+			<input>/controls/fuel/tank-selector</input>
+			<rate_limit>5</rate_limit>
+			<output>/controls/fuel/tank-selector-animation</output>
+		</actuator>
+		
+		<switch>
+			<default value="0"/>
+			<test value="1">
+				/controls/fuel/tank-selector eq 2
+			</test>
+			<output>/consumables/fuel/tank[0]/selected</output>
+			<output>propulsion/tank[0]/priority</output>
+		</switch>
+		
+		<switch>
+			<default value="0"/>
+			<test value="1">
+				/controls/fuel/tank-selector eq 1
+			</test>
+			<output>/consumables/fuel/tank[1]/selected</output>
+			<output>propulsion/tank[1]/priority</output>
+		</switch>
+	</channel>
+</system>

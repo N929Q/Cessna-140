@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PropertyList>
+	<sim>
+		<minimum-fg-version>2020.4.0</minimum-fg-version>
+		<description>Cessna 140</description>
+		<authors>
+			<author>
+				<name>Bea Wolf</name>
+				<nick>D-ECHO</nick>
+				<description>Initial version (3D, FDM, Nasal, Systems)</description>
+			</author>
+			<author>
+				<name>TheEagle</name> <!-- needed to show up on the splash screen -->
+				<nick>TheEagle</nick>
+				<email>thefgfseagle@gmail.com</email>
+				<description>3D, Nasal, Systems, GUI</description>
+			</author>
+		</authors>
+		<equipment>
+			<nav-radio type="bool">true</nav-radio>
+		</equipment>
+		<checklists include="c140-checklists.xml"/>
+		<menubar>
+			<default>
+				<menu n="10">
+					<label>Cessna 140</label>
+					<item>
+						<label>Aircraft configuration</label>
+						<binding>
+							<command>nasal</command>
+							<script>c140.dialogs.aircraftConfigurationDialog.show();</script>
+						</binding>
+					</item>
+					<item>
+						<label>Select Livery</label>
+						<binding>
+							<command>nasal</command>
+							<script>aircraft.livery.dialog.toggle()</script>
+						</binding>
+					</item>
+				</menu>
+			</default>
+		</menubar>
+		<model>
+			<path>Models/c140.xml</path>
+			<show-yoke type="bool">true</show-yoke>
+			<livery>
+				<reflection-correction type="double">-0.7</reflection-correction>
+				<ambient-correction type="double">0.15</ambient-correction>
+				<fresnel type="double">0.2</fresnel>
+			</livery>
+		</model>
+		<instrumentation>
+			<path>Systems/instrumentation.xml</path>
+		</instrumentation>
+		<view>
+			<name>Cockpit View</name>
+			<type>lookfrom</type>
+			<internal type="bool">true</internal>
+			<config>
+				<x-offset-m type="double">-0.257</x-offset-m>
+				<y-offset-m type="double"> 0.46  </y-offset-m>
+				<z-offset-m type="double">-1.2  </z-offset-m>
+				<default-field-of-view-deg type="double"> 73.0</default-field-of-view-deg>
+				<pitch-offset-deg type="double">-8</pitch-offset-deg>
+			</config>
+		</view>
+		<view n="100">
+			<name>Copilot View</name>
+			<type>lookfrom</type>
+			<internal type="bool">true</internal>
+			<config>
+				<from-model type="bool">true</from-model>
+				<from-model-idx type="int">0</from-model-idx>
+				<x-offset-m type="double"> 0.257</x-offset-m>
+				<y-offset-m type="double"> 0.4  </y-offset-m>
+				<z-offset-m type="double">-1.2  </z-offset-m>
+				<default-field-of-view-deg type="double"> 70.0</default-field-of-view-deg>
+				<pitch-offset-deg type="double">-8</pitch-offset-deg>
+			</config>
+		</view>
+		<view n="101">
+			<name>Tail Camera View</name>
+			<type>lookfrom</type>
+			<internal type="bool">false</internal>
+			<config>
+				<from-model type="bool">true</from-model>
+				<from-model-idx type="int">0</from-model-idx>
+				<x-offset-m type="double"> 0.0  </x-offset-m>
+				<y-offset-m type="double"> 1.37 </y-offset-m>
+				<z-offset-m type="double"> 2.59 </z-offset-m>
+				<default-field-of-view-deg type="double"> 100.0</default-field-of-view-deg>
+			</config>
+		</view>
+		<view n="102">
+			<name>Left Wing Camera View</name>
+			<type>lookfrom</type>
+			<internal type="bool">false</internal>
+			<config>
+				<from-model type="bool">true</from-model>
+				<from-model-idx type="int">0</from-model-idx>
+				<x-offset-m type="double"> -2.14 </x-offset-m>
+				<y-offset-m type="double">  0.415 </y-offset-m>
+				<z-offset-m type="double"> -1.17 </z-offset-m>
+				<default-field-of-view-deg type="double"> 103.0</default-field-of-view-deg>
+				<heading-offset-deg type="double">326</heading-offset-deg>
+				<pitch-offset-deg type="double">-20</pitch-offset-deg>
+			</config>
+		</view>
+		<sound>
+			<path>Sounds/c140-sound.xml</path>
+		</sound>
+		<systems>
+			<electrical>
+				<path></path> <!-- Disable generic XML electrical system -->
+			</electrical>
+			<property-rule n="100">
+				<path>Models/Instruments/ki206/ki206-property-rules.xml</path>
+			</property-rule>
+			<property-rule n="101">
+				<path>Models/Instruments/tsi-5550/tsi-5550-property-rules.xml</path>
+			</property-rule>
+		</systems>
+		<aircraft-data>
+			<path>/sim/equipment/nav-radio</path>
+		</aircraft-data>
+	</sim>
+	<c140>
+		<sound>
+			<click type="bool">0</click>
+		</sound>
+	</c140>
+	<consumables>
+		<fuel>
+			<tank n="0">
+				<water-contamination type="double">0.0</water-contamination>
+			</tank>
+			<tank n="1">
+				<water-contamination type="double">0.0</water-contamination>
+			</tank>
+		</fuel>
+	</consumables>
+	<controls>
+		<circuit-breakers>
+			<master type="bool">1</master>
+			<generator type="bool">1</generator>
+			<radio type="bool">1</radio>
+			<landing-light-motors type="bool">1</landing-light-motors>
+			<landing-light-left type="bool">1</landing-light-left>
+			<landing-light-right type="bool">1</landing-light-right>
+			<instr-navlt type="bool">1</instr-navlt>
+			<turn-coordinator type="bool">1</turn-coordinator>
+		</circuit-breakers>
+		<engines>
+			<engine n="0">
+				<primer type="int">0</primer>
+				<primer-lever type="double">0.0</primer-lever>
+				<primer-animation type="double">0.0</primer-animation>
+				<use-primer type="bool">false</use-primer>
+				<carburetor-heat type="double">0.0</carburetor-heat>
+			</engine>
+		</engines>
+		<fuel>
+			<tank-selector type="int">1</tank-selector>	<!-- 0: both off, 1: right tank, 2: left tank -->
+			<tank-selector-animation type="double">0.0</tank-selector-animation>
+		</fuel>
+		<lighting>
+			<landing-lights-transit type="bool">0</landing-lights-transit>
+		</lighting>
+		<switches>
+			<master type="bool">0</master>
+			<nav-lights type="bool">0</nav-lights>
+			<landing-lights type="bool">0</landing-lights>
+			<turn-coordinator type="bool">0</turn-coordinator>
+			<starter type="bool">0</starter>
+		</switches>
+	</controls>
+	<engines>
+		<engine n="0">
+			<oil-level type="double">0.0</oil-level>
+			<carb_ice type="double">0.0</carb_ice>
+		</engine>
+	</engines>
+	<input>
+		<keyboard n="0">
+			<key n="121">
+				<name>y</name>
+				<desc>Show/hide yokes</desc>
+				<binding>
+					<command>property-toggle</command>
+					<property>sim/model/show-yoke</property>
+				</binding>
+			</key>
+		</keyboard>
+	</input>
+	<instrumentation>
+		<comm n="0">
+			<channel-mode-selector type="int">0</channel-mode-selector>
+			<dimming-norm type="float">0.0</dimming-norm>
+		</comm>
+	</instrumentation>
+	<payload>
+		<weight>
+			<name type="string">Pilot</name>
+			<weight-lb alias="/fdm/jsbsim/inertia/pointmass-weight-lbs[0]"/>
+			<arm-in alias="/fdm/jsbsim/inertia/pointmass-location-X-inches[0]"/>
+			<min-lb type="double">0.0</min-lb>
+			<max-lb type="double">330.0</max-lb>
+		</weight>
+		<weight>
+			<name type="string">Co-Pilot</name>
+			<weight-lb alias="/fdm/jsbsim/inertia/pointmass-weight-lbs[1]"/>
+			<arm-in alias="/fdm/jsbsim/inertia/pointmass-location-X-inches[1]"/>
+			<min-lb type="double">0.0</min-lb>
+			<max-lb type="double">330.0</max-lb>
+		</weight>
+		<weight>
+			<name type="string">Baggage</name>
+			<weight-lb alias="/fdm/jsbsim/inertia/pointmass-weight-lbs[2]"/>
+			<arm-in alias="/fdm/jsbsim/inertia/pointmass-location-X-inches[2]"/>
+			<min-lb type="double">0.0</min-lb>
+			<max-lb type="double">50.0</max-lb>
+		</weight>
+	</payload>
+	<nasal>
+		<updateloop>
+			<file>Aircraft/Generic/updateloop.nas</file>
+		</updateloop>
+		<c140>
+			<file>Nasal/c140.nas</file>
+			<file>Nasal/controls.nas</file>
+			<file>Nasal/dialogs.nas</file>
+			<file>Nasal/electrical.nas</file>
+			<file>Nasal/engine.nas</file>
+			<file>Aircraft/Generic/limits.nas</file>
+		</c140>
+		<libraries>
+			<file>Nasal/kx165a.nas</file>
+		</libraries>
+		<astrotech_lc2>
+			<file>Nasal/astrotech-lc2.nas</file>
+		</astrotech_lc2>
+	</nasal>
+	<refl-factor type="double">0.0</refl-factor>
+</PropertyList>
